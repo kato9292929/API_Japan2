@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
+import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
 const handler = async (req: NextRequest) => {
@@ -22,6 +23,23 @@ export const GET = withX402(
       payTo: process.env.WALLET_ADDRESS as `0x${string}`,
     },
     description: "TSE stock data",
+    extensions: {
+      ...declareDiscoveryExtension({
+        pathParams: { ticker: "7203.T" },
+        pathParamsSchema: {
+          properties: { ticker: { type: "string", description: "TSE ticker symbol (e.g. 7203.T)" } },
+          required: ["ticker"],
+        },
+        output: {
+          example: {
+            ticker: "7203.T",
+            price: 3240,
+            currency: "JPY",
+            note: "mock data",
+          },
+        },
+      }),
+    },
   },
   server,
   undefined,

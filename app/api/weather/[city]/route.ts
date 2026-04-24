@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
+import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
 const handler = async (req: NextRequest) => {
@@ -21,6 +22,23 @@ export const GET = withX402(
       payTo: process.env.WALLET_ADDRESS as `0x${string}`,
     },
     description: "Japan weather data",
+    extensions: {
+      ...declareDiscoveryExtension({
+        pathParams: { city: "tokyo" },
+        pathParamsSchema: {
+          properties: { city: { type: "string", description: "City name" } },
+          required: ["city"],
+        },
+        output: {
+          example: {
+            city: "tokyo",
+            temperature_2m: 22.5,
+            relative_humidity_2m: 60,
+            wind_speed_10m: 5.2,
+          },
+        },
+      }),
+    },
   },
   server,
   undefined,

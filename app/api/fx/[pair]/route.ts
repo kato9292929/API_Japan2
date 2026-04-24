@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
+import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
 const handler = async (req: NextRequest) => {
@@ -19,6 +20,21 @@ export const GET = withX402(
       payTo: process.env.WALLET_ADDRESS as `0x${string}`,
     },
     description: "JPY exchange rate",
+    extensions: {
+      ...declareDiscoveryExtension({
+        pathParams: { pair: "USDJPY" },
+        pathParamsSchema: {
+          properties: { pair: { type: "string", description: "Currency pair (e.g. USDJPY)" } },
+          required: ["pair"],
+        },
+        output: {
+          example: {
+            pair: "USDJPY",
+            rate: 154.32,
+          },
+        },
+      }),
+    },
   },
   server,
   undefined,
