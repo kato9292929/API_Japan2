@@ -1,36 +1,184 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# API Japan — Japan Data APIs for AI Agents
 
-## Getting Started
+**x402-gated REST APIs serving Japan market data. No API keys. Pay per call in USDC.**
 
-First, run the development server:
+Live: [apijapan.vercel.app](https://apijapan.vercel.app)
+
+---
+
+日本語は[こちら](#日本語)
+
+---
+
+## Overview
+
+API Japan exposes four REST endpoints protected by the [x402 payment protocol](https://x402.org). Any HTTP client — including AI agents — can access them by attaching a USDC micropayment header. No registration, no API keys, no subscriptions.
+
+| Endpoint | Description | Price |
+|---|---|---|
+| `GET /api/weather/[city]` | Current weather for a Japanese city | $0.001 USDC |
+| `GET /api/fx/[pair]` | JPY exchange rate | $0.001 USDC |
+| `GET /api/stocks/[ticker]` | TSE stock price (mock) | $0.010 USDC |
+| `GET /api/news/apac` | APAC crypto news headlines | $0.005 USDC |
+
+Network: **Base Sepolia** (testnet) · Asset: **USDC**
+
+---
+
+## How It Works
+
+Without payment the server returns `402 Payment Required` with a `payment-required` header describing what is owed:
+
+```bash
+curl -i https://apijapan.vercel.app/api/weather/tokyo
+
+HTTP/1.1 402 Payment Required
+payment-required: eyJ4NDAyVmVyc2lvbi...
+```
+
+An x402-capable client reads that header, signs a USDC transfer on Base Sepolia, and retries the request with a `payment-signature` header. The server verifies and settles atomically before returning data.
+
+---
+
+## Discovery
+
+A machine-readable endpoint list is available at:
+
+```
+GET /.well-known/x402.json
+```
+
+This follows the x402 discovery v1 schema and is consumed by [Bazaar](https://docs.cdp.coinbase.com/x402/bazaar) for automatic API cataloging.
+
+---
+
+## Local Development
+
+### Prerequisites
+
+- Node.js 20+
+- A wallet address on Base Sepolia
+
+### Setup
+
+```bash
+git clone https://github.com/kato9292929/api_japan2
+cd api_japan2
+npm install
+```
+
+Copy the environment file and fill in your wallet address:
+
+```bash
+cp .env.local.example .env.local
+```
+
+```env
+WALLET_ADDRESS=0xYourWalletAddress
+FACILITATOR_URL=https://x402.org/facilitator
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Verify the payment gate
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+curl -i localhost:3000/api/weather/tokyo
+# Expect: HTTP/1.1 402 Payment Required
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  page.tsx                    # Landing page
+  layout.tsx                  # Root layout + metadata
+  .well-known/x402.json/
+    route.ts                  # Discovery endpoint (dynamic, reads WALLET_ADDRESS)
+  api/
+    weather/[city]/route.ts   # Weather API
+    fx/[pair]/route.ts        # FX rate API
+    stocks/[ticker]/route.ts  # Stock price API
+    news/apac/route.ts        # News API
+lib/
+  x402-server.ts              # x402ResourceServer singleton
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Payment protocol | x402 v2 (`@x402/next`, `@x402/core`, `@x402/evm`) |
+| Discovery | `@x402/extensions` (Bazaar) |
+| Network | Base Sepolia (EIP-155 chain 84532) |
+| Deployment | Vercel |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `WALLET_ADDRESS` | Yes | EVM address to receive USDC payments |
+| `FACILITATOR_URL` | No | x402 facilitator URL (default: `https://x402.org/facilitator`) |
+
+---
+
+---
+
+# 日本語
+
+## 概要
+
+API Japan は [x402 ペイメントプロトコル](https://x402.org) でアクセス制限された REST API です。AIエージェントを含む任意の HTTP クライアントが、USDC マイクロペイメントのヘッダーを付加するだけでデータを取得できます。登録・APIキー・サブスクリプション不要。
+
+| エンドポイント | 内容 | 価格 |
+|---|---|---|
+| `GET /api/weather/[city]` | 日本の都市の現在の天気 | $0.001 USDC |
+| `GET /api/fx/[pair]` | JPY 為替レート | $0.001 USDC |
+| `GET /api/stocks/[ticker]` | 東証株価（モックデータ） | $0.010 USDC |
+| `GET /api/news/apac` | APAC 暗号資産ニュース | $0.005 USDC |
+
+ネットワーク: **Base Sepolia**（テストネット）· アセット: **USDC**
+
+---
+
+## 仕組み
+
+支払いなしでリクエストすると `402 Payment Required` が返ります:
+
+```bash
+curl -i https://apijapan.vercel.app/api/weather/tokyo
+
+HTTP/1.1 402 Payment Required
+payment-required: eyJ4NDAyVmVyc2lvbi...
+```
+
+x402 対応クライアントはそのヘッダーを読み取り、Base Sepolia 上で USDC 送金に署名し、`payment-signature` ヘッダーを付けてリトライします。サーバーはアトミックに検証・決済してからデータを返します。
+
+---
+
+## ローカル開発
+
+```bash
+git clone https://github.com/kato9292929/api_japan2
+cd api_japan2
+npm install
+cp .env.local.example .env.local
+# .env.local に WALLET_ADDRESS を設定
+npm run dev
+```
+
+---
+
+## ライセンス
+
+MIT
