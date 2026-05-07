@@ -1,18 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
-import { withX402 } from "@x402/next";
-import { getServer, svmAddress } from "../../../lib/x402-server";
+import { NextRequest, NextResponse } from 'next/server';
+import { X402PaymentHandler } from 'x402-solana/server';
 
-const handler = async (_: NextRequest) => {
-  return NextResponse.json({ weather: "sunny", temperature: 22 }, { status: 200 });
-};
+const x402 = new X402PaymentHandler({
+  network: 'solana-devnet',
+  treasuryAddress: process.env.SOLANA_WALLET_ADDRESS!,
+  facilitatorUrl: 'https://facilitator.payai.network',
+});
 
-export const GET = withX402(handler, {
-  accepts: [{
-    scheme: "exact",
-    price: "$0.001",
-    network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-    payTo: svmAddress,
-  }],
-  description: "Japan weather data",
-  mimeType: "application/json",
-}, await getServer());
+export async function GET(req: NextRequest) {
+  const resourceUrl = 'https://apijapan.vercel.app/api/weather/tokyo';
+  const paymentHeader = x402.extractPayment(req.headers);
+
+  const paymentRequirements = await x402.createPaymentRequirements({
+    amount: '1000',
+    asset: {
+      address: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
+      decimals: 6,
+    },
+    description: 'Tokyo weather data',
+  }, resourceUrl);
+
+  if (!paymentHeader) {
+    const response = x402.create402Response(paymentRequirements, resourceUrl);
+    return NextResponse.json(response.body, { status: response.status });
+  }
+
+  const verified = await x402.verifyPayment(paymentHeader, paymentRequirements);
+  if (!verified.isValid) {
+    return NextResponse.json({ error: 'Invalid payment' }, { status: 402 });
+  }
+
+  await x402.settlePayment(paymentHeader, paymentRequirements);
+
+  return NextResponse.json({ weather: 'sunny', temperature: 22, city: 'Tokyo' });
+}
