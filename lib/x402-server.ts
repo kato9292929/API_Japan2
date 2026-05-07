@@ -24,4 +24,7 @@ export const ensureServerReady = (): Promise<void> => {
 // Kick off at module load (non-blocking) so the first request doesn't wait cold.
 ensureServerReady().catch(console.error);
 
+export const getServer = (): Promise<x402ResourceServer> =>
+  ensureServerReady().then(() => server);
+
 export const svmAddress = process.env.SOLANA_WALLET_ADDRESS!;
