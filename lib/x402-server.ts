@@ -2,6 +2,7 @@ import { x402ResourceServer, HTTPFacilitatorClient } from "@x402/core/server";
 import { registerExactEvmScheme } from "@x402/evm/exact/server";
 import { registerExactSvmScheme } from "@x402/svm/exact/server";
 import { SOLANA_DEVNET_CAIP2 } from "@x402/svm";
+import { bazaarResourceServerExtension } from "@x402/extensions/bazaar";
 
 const facilitatorClient = new HTTPFacilitatorClient({
   url: process.env.FACILITATOR_URL ?? "https://x402.org/facilitator",
@@ -10,6 +11,7 @@ const facilitatorClient = new HTTPFacilitatorClient({
 export const server = new x402ResourceServer(facilitatorClient);
 registerExactEvmScheme(server);
 registerExactSvmScheme(server);
+server.registerExtension(bazaarResourceServerExtension);
 
 // Manually populate supportedResponsesMap so the 402 gate works without
 // a live facilitator connection (x402.org blocks non-allowlisted hosts).
