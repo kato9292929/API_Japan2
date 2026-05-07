@@ -1,55 +1,41 @@
-import { NextRequest, NextResponse } from "next/server";
-import { withX402 } from "@x402/next";
-import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
-import { server } from "@/lib/x402-server";
+import { NextRequest, NextResponse } from 'next/server';
+import { X402PaymentHandler } from 'x402-solana/server';
 
-const handler = async (req: NextRequest) => {
-  const city = req.nextUrl.pathname.split("/").pop() ?? "tokyo";
+const x402 = new X402PaymentHandler({
+  network: 'solana-devnet',
+  treasuryAddress: process.env.SOLANA_WALLET_ADDRESS!,
+  facilitatorUrl: 'https://facilitator.payai.network',
+});
+
+export async function GET(req: NextRequest) {
+  const city = req.nextUrl.pathname.split('/').pop() ?? 'tokyo';
+  const resourceUrl = `https://apijapan.vercel.app/api/weather/${city}`;
+  const paymentHeader = x402.extractPayment(req.headers);
+
+  const paymentRequirements = await x402.createPaymentRequirements({
+    amount: '1000',
+    asset: {
+      address: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
+      decimals: 6,
+    },
+    description: `${city} weather data`,
+  }, resourceUrl);
+
+  if (!paymentHeader) {
+    const response = x402.create402Response(paymentRequirements, resourceUrl);
+    return NextResponse.json(response.body, { status: response.status });
+  }
+
+  const verified = await x402.verifyPayment(paymentHeader, paymentRequirements);
+  if (!verified.isValid) {
+    return NextResponse.json({ error: 'Invalid payment' }, { status: 402 });
+  }
+
+  await x402.settlePayment(paymentHeader, paymentRequirements);
+
   const res = await fetch(
-    "https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
+    'https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m,relative_humidity_2m,wind_speed_10m'
   );
   const data = await res.json();
   return NextResponse.json({ city, ...data.current });
-};
-
-export const GET = withX402(
-  handler,
-  {
-    accepts: [
-      {
-        scheme: "exact",
-        price: "$0.001",
-        network: "eip155:84532",
-        payTo: process.env.WALLET_ADDRESS as `0x${string}`,
-      },
-      {
-        scheme: "exact",
-        price: "$0.001",
-        network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-        payTo: process.env.SOLANA_WALLET_ADDRESS as string,
-      },
-    ],
-    description: "Japan weather data",
-    extensions: {
-      ...declareDiscoveryExtension({
-        pathParams: { city: "tokyo" },
-        pathParamsSchema: {
-          properties: { city: { type: "string", description: "City name" } },
-          required: ["city"],
-        },
-        output: {
-          example: {
-            city: "tokyo",
-            temperature_2m: 22.5,
-            relative_humidity_2m: 60,
-            wind_speed_10m: 5.2,
-          },
-        },
-      }),
-    },
-  },
-  server,
-  undefined,
-  undefined,
-  false,
-);
+}
