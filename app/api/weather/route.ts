@@ -22,7 +22,11 @@ export async function GET(req: NextRequest) {
 
   if (!paymentHeader) {
     const response = x402.create402Response(paymentRequirements, resourceUrl);
-    return NextResponse.json(response.body, { status: response.status });
+    const encoded = Buffer.from(JSON.stringify(response.body)).toString('base64');
+    return NextResponse.json(response.body, {
+      status: response.status,
+      headers: { 'PAYMENT-REQUIRED': encoded },
+    });
   }
 
   const verified = await x402.verifyPayment(paymentHeader, paymentRequirements);
