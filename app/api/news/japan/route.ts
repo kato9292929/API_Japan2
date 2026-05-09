@@ -4,20 +4,10 @@ import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
 const handler = async (_req: NextRequest) => {
-  const res = await fetch(
-    "https://feeds.feedburner.com/CoinDesk" ,
-    { headers: { "User-Agent": "Mozilla/5.0" }, next: { revalidate: 300 } }
-  );
-
-  if (!res.ok) {
-    return NextResponse.json({
-      source: "CoinDesk",
-      items: [
-        { title: "APAC crypto market update", pubDate: new Date().toUTCString() },
-      ],
-    });
-  }
-
+  const res = await fetch("https://www3.nhk.or.jp/rss/news/cat0.xml", {
+    headers: { "User-Agent": "Mozilla/5.0" },
+    next: { revalidate: 300 },
+  });
   const xml = await res.text();
   const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)]
     .slice(0, 10)
@@ -34,8 +24,7 @@ const handler = async (_req: NextRequest) => {
       const pubDate = raw.match(/<pubDate>(.*?)<\/pubDate>/s)?.[1] ?? "";
       return { title: title.trim(), link: link.trim(), pubDate: pubDate.trim() };
     });
-
-  return NextResponse.json({ source: "CoinDesk", items });
+  return NextResponse.json({ source: "NHK", items });
 };
 
 export const GET = withX402(
@@ -55,17 +44,17 @@ export const GET = withX402(
         payTo: process.env.SOLANA_WALLET_ADDRESS as string,
       },
     ],
-    description: "APAC crypto news headlines from CoinDesk",
+    description: "Latest Japan news headlines from NHK",
     extensions: {
       ...declareDiscoveryExtension({
         output: {
           example: {
-            source: "CoinDesk",
+            source: "NHK",
             items: [
               {
-                title: "Bitcoin Hits New High as APAC Investors Pile In",
-                link: "https://coindesk.com/...",
-                pubDate: "Thu, 08 May 2025 10:00:00 +0000",
+                title: "日本の最新ニュース",
+                link: "https://www3.nhk.or.jp/news/html/...",
+                pubDate: "Thu, 08 May 2025 10:00:00 +0900",
               },
             ],
           },
