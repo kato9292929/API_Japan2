@@ -1,40 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { X402PaymentHandler } from 'x402-solana/server';
+import { NextRequest, NextResponse } from "next/server";
+import { withX402 } from "@x402/next";
+import { server } from "@/lib/x402-server";
 
-const x402 = new X402PaymentHandler({
-  network: 'solana-devnet',
-  treasuryAddress: process.env.SOLANA_WALLET_ADDRESS!,
-  facilitatorUrl: 'https://facilitator.payai.network',
-});
+const handler = async (_req: NextRequest) => {
+  const res = await fetch(
+    "https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
+  );
+  const data = await res.json();
+  return NextResponse.json({ city: "tokyo", ...data.current });
+};
 
-export async function GET(req: NextRequest) {
-  const resourceUrl = 'https://apijapan.vercel.app/api/weather/tokyo';
-  const paymentHeader = x402.extractPayment(req.headers);
-
-  const paymentRequirements = await x402.createPaymentRequirements({
-    amount: '1000',
-    asset: {
-      address: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
-      decimals: 6,
-    },
-    description: 'Tokyo weather data',
-  }, resourceUrl);
-
-  if (!paymentHeader) {
-    const response = x402.create402Response(paymentRequirements, resourceUrl);
-    const encoded = Buffer.from(JSON.stringify(response.body)).toString('base64');
-    return NextResponse.json(response.body, {
-      status: response.status,
-      headers: { 'PAYMENT-REQUIRED': encoded },
-    });
-  }
-
-  const verified = await x402.verifyPayment(paymentHeader, paymentRequirements);
-  if (!verified.isValid) {
-    return NextResponse.json({ error: 'Invalid payment' }, { status: 402 });
-  }
-
-  await x402.settlePayment(paymentHeader, paymentRequirements);
-
-  return NextResponse.json({ weather: 'sunny', temperature: 22, city: 'Tokyo' });
-}
+export const GET = withX402(
+  handler,
+  {
+    accepts: [
+      {
+        scheme: "exact",
+        price: "$0.001",
+        network: "eip155:84532",
+        payTo: process.env.WALLET_ADDRESS as `0x${string}`,
+      },
+      {
+        scheme: "exact",
+        price: "$0.001",
+        network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+        payTo: process.env.SOLANA_WALLET_ADDRESS as string,
+      },
+    ],
+    description: "Tokyo weather data",
+  },
+  server,
+  undefined,
+  undefined,
+  false,
+);

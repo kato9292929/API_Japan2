@@ -18,7 +18,7 @@ export function GET() {
 
   const solanaAccept = (maxAmountRequired: string) => ({
     scheme: "exact",
-    network: "solana-devnet",
+    network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
     maxAmountRequired,
     asset: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
     payTo: solanaPayTo,
