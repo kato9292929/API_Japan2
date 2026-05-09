@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ENDPOINTS } from "@/lib/endpoints";
 
 export const dynamic = "force-dynamic";
 
@@ -28,85 +29,11 @@ export function GET() {
 
   return NextResponse.json({
     x402Version: 1,
-    endpoints: [
-      {
-        path: "/api/weather/{city}",
-        method: "GET",
-        description: "Current weather for APAC cities (tokyo, singapore, seoul, sydney, ...)",
-        accepts: [evmAccept("1000"), solanaAccept("1000")],
-      },
-      {
-        path: "/api/fx/{pair}",
-        method: "GET",
-        description: "APAC FX rate against USD (USDJPY, USDSGD, USDKRW, ...)",
-        accepts: [evmAccept("1000"), solanaAccept("1000")],
-      },
-      {
-        path: "/api/crypto/{coin}",
-        method: "GET",
-        description: "Crypto price in USD and JPY (bitcoin, ethereum, solana, ...)",
-        accepts: [evmAccept("1000"), solanaAccept("1000")],
-      },
-      {
-        path: "/api/news/japan",
-        method: "GET",
-        description: "Latest Japan news headlines from NHK",
-        accepts: [evmAccept("2000"), solanaAccept("2000")],
-      },
-      {
-        path: "/api/news/apac",
-        method: "GET",
-        description: "APAC crypto news headlines from CoinDesk",
-        accepts: [evmAccept("2000"), solanaAccept("2000")],
-      },
-      {
-        path: "/api/holiday/jp",
-        method: "GET",
-        description: "Japanese public holidays for the current year",
-        accepts: [evmAccept("1000"), solanaAccept("1000")],
-      },
-      {
-        path: "/api/earthquake/jp",
-        method: "GET",
-        description: "Recent Japan earthquake events (JMA via P2PQuake)",
-        accepts: [evmAccept("2000"), solanaAccept("2000")],
-      },
-      {
-        path: "/api/tsunami/jp",
-        method: "GET",
-        description: "Japan tsunami warnings (JMA via P2PQuake)",
-        accepts: [evmAccept("3000"), solanaAccept("3000")],
-      },
-      {
-        path: "/api/air/{city}",
-        method: "GET",
-        description: "Air quality index for APAC cities (AQI, PM2.5, PM10, NO2, O3)",
-        accepts: [evmAccept("2000"), solanaAccept("2000")],
-      },
-      {
-        path: "/api/company/{number}",
-        method: "GET",
-        description: "Japan corporate info by 13-digit corporate number (国税庁)",
-        accepts: [evmAccept("2000"), solanaAccept("2000")],
-      },
-      {
-        path: "/api/stats/{prefecture}",
-        method: "GET",
-        description: "Japan prefecture statistics from e-Stat (tokyo, osaka, kyoto, ...)",
-        accepts: [evmAccept("3000"), solanaAccept("3000")],
-      },
-      {
-        path: "/api/culture/{keyword}",
-        method: "GET",
-        description: "Japan cultural heritage search via Japan Search (jpsearch.go.jp)",
-        accepts: [evmAccept("2000"), solanaAccept("2000")],
-      },
-      {
-        path: "/api/stocks/{ticker}",
-        method: "GET",
-        description: "TSE/APAC stock price",
-        accepts: [evmAccept("10000"), solanaAccept("10000")],
-      },
-    ],
+    endpoints: ENDPOINTS.map((ep) => ({
+      path: ep.path,
+      method: ep.method,
+      description: ep.description,
+      accepts: [evmAccept(ep.maxAmount), solanaAccept(ep.maxAmount)],
+    })),
   });
 }

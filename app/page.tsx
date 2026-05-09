@@ -1,150 +1,294 @@
-import type { Metadata } from "next";
+import { ENDPOINTS } from "@/lib/endpoints";
 
-export const metadata: Metadata = {
-  title: "API Japan — Japan Data APIs for AI Agents",
-  description:
-    "x402対応の日本データAPI。天気・為替・株価をAIエージェントに提供。APIキー不要・USDC決済。",
-  openGraph: {
-    title: "API Japan — Japan Data APIs for AI Agents",
-    description:
-      "x402対応の日本データAPI。天気・為替・株価をAIエージェントに提供。APIキー不要・USDC決済。",
-    type: "website",
-    siteName: "API Japan",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "API Japan — Japan Data APIs for AI Agents",
-    description:
-      "x402対応の日本データAPI。天気・為替・株価をAIエージェントに提供。APIキー不要・USDC決済。",
-  },
+const TAG_STYLE: Record<string, string> = {
+  Weather:    "text-sky-400    border-sky-400/30",
+  FX:         "text-emerald-400 border-emerald-400/30",
+  Crypto:     "text-amber-400  border-amber-400/30",
+  News:       "text-violet-400 border-violet-400/30",
+  Calendar:   "text-yellow-400 border-yellow-400/30",
+  Disaster:   "text-red-400    border-red-400/30",
+  Air:        "text-cyan-400   border-cyan-400/30",
+  Corporate:  "text-blue-400   border-blue-400/30",
+  Statistics: "text-indigo-400 border-indigo-400/30",
+  Culture:    "text-rose-400   border-rose-400/30",
+  Stocks:     "text-purple-400 border-purple-400/30",
 };
 
-const endpoints = [
+const STEPS = [
   {
-    path: "/api/weather/[city]",
-    description: "Japan weather data",
-    price: "$0.001",
-    tag: "Weather",
-    tagClass: "text-sky-400 bg-sky-400/10 border border-sky-400/20",
+    num: "01",
+    title: "リクエスト送信",
+    body: "x402対応クライアントが APIエンドポイントにリクエスト",
+    code: "GET /api/weather/tokyo",
+    codeColor: "text-sky-400",
   },
   {
-    path: "/api/fx/[pair]",
-    description: "JPY exchange rate",
-    price: "$0.001",
-    tag: "FX",
-    tagClass: "text-emerald-400 bg-emerald-400/10 border border-emerald-400/20",
+    num: "02",
+    title: "402 返却",
+    body: "サーバーが支払い要件（金額・ネットワーク・アドレス）を返す",
+    code: "← 402 Payment Required",
+    codeColor: "text-[#D4AF37]",
   },
   {
-    path: "/api/stocks/[ticker]",
-    description: "TSE stock data",
-    price: "$0.010",
-    tag: "Stocks",
-    tagClass: "text-violet-400 bg-violet-400/10 border border-violet-400/20",
+    num: "03",
+    title: "USDC 決済",
+    body: "クライアントが Base / Solana でUSDC送金に署名し再送",
+    code: "→ x-payment: <signed tx>",
+    codeColor: "text-emerald-400",
   },
   {
-    path: "/api/news/apac",
-    description: "APAC crypto news",
-    price: "$0.005",
-    tag: "News",
-    tagClass: "text-amber-400 bg-amber-400/10 border border-amber-400/20",
+    num: "04",
+    title: "200 OK",
+    body: "サーバーが決済を検証し、データを即座に返す",
+    code: '← 200 {"temperature_2m":22.5}',
+    codeColor: "text-emerald-400",
   },
-] as const;
+];
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="border-b border-zinc-800">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-3">
-          <span className="text-lg font-bold tracking-tight text-white">
-            API Japan
-          </span>
-          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-            x402
-          </span>
+    <div
+      className="min-h-screen flex flex-col"
+      style={{ background: "#000", color: "#fff", fontFamily: "'Outfit', sans-serif" }}
+    >
+      {/* ── Header ── */}
+      <header style={{ borderBottom: "1px solid #1a1a1a" }}>
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-base font-semibold tracking-tight">API Japan</span>
+            <span
+              className="text-[10px] font-semibold px-2 py-0.5 rounded-full border tracking-widest"
+              style={{ color: "#D4AF37", borderColor: "#D4AF3740", background: "#D4AF3710" }}
+            >
+              x402
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs" style={{ color: "#555" }}>LIVE</span>
+          </div>
         </div>
       </header>
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
-          <h1 className="text-5xl font-bold tracking-tight text-white leading-tight mb-5">
+        {/* ── Hero ── */}
+        <section className="max-w-6xl mx-auto px-6 pt-24 pb-20 text-center">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <span
+              className="text-[10px] font-semibold tracking-[0.25em] px-3 py-1 rounded-full border"
+              style={{ color: "#D4AF37", borderColor: "#D4AF3740", background: "#D4AF3708" }}
+            >
+              x402 ENABLED
+            </span>
+            <span className="text-[10px]" style={{ color: "#333" }}>·</span>
+            <span
+              className="text-[10px] font-semibold tracking-[0.25em] px-3 py-1 rounded-full border"
+              style={{ color: "#888", borderColor: "#333" }}
+            >
+              APAC FIRST
+            </span>
+          </div>
+
+          <h1
+            className="text-5xl sm:text-6xl font-bold tracking-tight leading-[1.1] mb-6"
+          >
             Japan Data APIs
             <br />
-            <span className="text-zinc-500">for AI Agents</span>
+            <span style={{ color: "#444" }}>for AI Agents</span>
           </h1>
-          <p className="text-zinc-400 text-lg max-w-lg mx-auto leading-relaxed">
+
+          <p className="text-lg max-w-md mx-auto leading-relaxed" style={{ color: "#888" }}>
             APIキー不要。x402プロトコルで USDC を送るだけで
-            日本の天気・為替・株価データを取得できます。
+            <br />
+            APAC の天気・為替・地震・企業情報を取得。
           </p>
+
+          <div className="mt-10 flex items-center justify-center">
+            <a
+              href="https://apijapan.vercel.app"
+              className="text-sm font-mono px-5 py-2.5 rounded-lg border transition-colors"
+              style={{
+                color: "#D4AF37",
+                borderColor: "#D4AF3750",
+                background: "#D4AF3708",
+              }}
+            >
+              apijapan.vercel.app ↗
+            </a>
+          </div>
         </section>
 
-        {/* Endpoint cards */}
-        <section className="max-w-5xl mx-auto px-6 pb-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {endpoints.map((ep) => (
+        {/* ── Endpoints ── */}
+        <section className="max-w-6xl mx-auto px-6 pb-24">
+          <div className="flex items-center gap-4 mb-8">
+            <span
+              className="text-[10px] font-semibold tracking-[0.25em]"
+              style={{ color: "#D4AF37" }}
+            >
+              ENDPOINTS
+            </span>
+            <span
+              className="text-xs font-mono px-2 py-0.5 rounded border"
+              style={{ color: "#555", borderColor: "#222" }}
+            >
+              {ENDPOINTS.length}
+            </span>
+            <span
+              className="text-[10px] tracking-widest"
+              style={{ color: "#333" }}
+            >
+              Base Mainnet · Solana Mainnet
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {ENDPOINTS.map((ep) => (
               <div
                 key={ep.path}
-                className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition-colors duration-150"
+                className="rounded-xl p-5 transition-colors group"
+                style={{
+                  background: "#080808",
+                  border: "1px solid #1a1a1a",
+                }}
+                onMouseEnter={(e) =>
+                  ((e.currentTarget as HTMLElement).style.borderColor = "#2a2a2a")
+                }
+                onMouseLeave={(e) =>
+                  ((e.currentTarget as HTMLElement).style.borderColor = "#1a1a1a")
+                }
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <span
-                    className={`text-xs font-medium px-2.5 py-1 rounded-full ${ep.tagClass}`}
+                    className={`text-[10px] font-medium px-2 py-0.5 rounded border ${TAG_STYLE[ep.tag] ?? "text-zinc-400 border-zinc-700"}`}
                   >
-                    {ep.tag}
+                    {ep.tag.toUpperCase()}
                   </span>
-                  <span className="text-xs font-mono text-zinc-400">
-                    {ep.price} USDC
+                  <span className="text-xs font-mono" style={{ color: "#D4AF37" }}>
+                    {ep.price}
                   </span>
                 </div>
-                <code className="block text-sm font-mono text-emerald-400 mb-2 break-all">
+                <code className="block text-sm font-mono mb-2 break-all" style={{ color: "#e0e0e0" }}>
                   {ep.path}
                 </code>
-                <p className="text-sm text-zinc-500">{ep.description}</p>
+                <p className="text-xs leading-relaxed" style={{ color: "#555" }}>
+                  {ep.description}
+                </p>
+                <p className="text-[10px] mt-2" style={{ color: "#333" }}>
+                  {ep.source}
+                </p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Usage */}
-        <section className="max-w-5xl mx-auto px-6 pb-24">
-          <h2 className="text-base font-semibold text-zinc-300 mb-4 tracking-wide uppercase text-sm">
-            使い方
-          </h2>
-          <div className="rounded-xl border border-zinc-800 overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900 border-b border-zinc-800">
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+        {/* ── How it works ── */}
+        <section className="max-w-6xl mx-auto px-6 pb-24">
+          <span
+            className="block text-[10px] font-semibold tracking-[0.25em] mb-10"
+            style={{ color: "#D4AF37" }}
+          >
+            PROTOCOL
+          </span>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {STEPS.map((step) => (
+              <div
+                key={step.num}
+                className="rounded-xl p-5"
+                style={{ background: "#080808", border: "1px solid #1a1a1a" }}
+              >
+                <div
+                  className="text-4xl font-bold mb-4 leading-none"
+                  style={{ color: "#1a1a1a" }}
+                >
+                  {step.num}
+                </div>
+                <div className="text-sm font-semibold mb-2">{step.title}</div>
+                <p className="text-xs leading-relaxed mb-4" style={{ color: "#555" }}>
+                  {step.body}
+                </p>
+                <code className={`text-xs font-mono break-all ${step.codeColor}`}>
+                  {step.code}
+                </code>
               </div>
-              <span className="text-zinc-600 text-xs font-mono ml-1">Terminal</span>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Terminal ── */}
+        <section className="max-w-6xl mx-auto px-6 pb-24">
+          <span
+            className="block text-[10px] font-semibold tracking-[0.25em] mb-6"
+            style={{ color: "#D4AF37" }}
+          >
+            TERMINAL
+          </span>
+
+          <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #1a1a1a" }}>
+            {/* title bar */}
+            <div
+              className="flex items-center gap-2 px-4 py-3"
+              style={{ background: "#0d0d0d", borderBottom: "1px solid #1a1a1a" }}
+            >
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#2a2a2a" }} />
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#2a2a2a" }} />
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#2a2a2a" }} />
+              <span className="text-xs font-mono ml-2" style={{ color: "#333" }}>bash</span>
             </div>
-            <div className="bg-zinc-950 px-5 py-5 overflow-x-auto">
-              <pre className="text-sm font-mono">
-                <span className="text-zinc-600 select-none">$ </span>
+
+            <div className="px-6 py-6 overflow-x-auto" style={{ background: "#050505" }}>
+              <pre className="text-sm font-mono leading-relaxed">
+                <span style={{ color: "#555" }}>$ </span>
                 <span className="text-emerald-400">curl</span>
-                <span className="text-zinc-300"> -i https://apijapan.vercel.app/api/weather/tokyo</span>
+                <span style={{ color: "#ccc" }}> -i https://apijapan.vercel.app/api/weather/tokyo</span>
                 {"\n\n"}
-                <span className="text-zinc-500"># 支払いなし → 402 が返る</span>
+                <span style={{ color: "#333" }}># 支払いなし → 402 が返る</span>
                 {"\n"}
-                <span className="text-zinc-400">HTTP/1.1 </span>
-                <span className="text-amber-400">402 Payment Required</span>
+                <span style={{ color: "#666" }}>HTTP/1.1 </span>
+                <span style={{ color: "#D4AF37" }}>402 Payment Required</span>
                 {"\n"}
-                <span className="text-zinc-400">payment-required: </span>
-                <span className="text-zinc-500">eyJ4NDAyVmVyc2lvbi...</span>
+                <span style={{ color: "#444" }}>
+                  {"{"}&quot;x402Version&quot;:1,&quot;accepts&quot;:[&#123;&quot;scheme&quot;:&quot;exact&quot;,&quot;network&quot;:&quot;base&quot;,...&#125;]{"}"}
+                </span>
+                {"\n\n"}
+                <span style={{ color: "#555" }}>$ </span>
+                <span className="text-emerald-400">curl</span>
+                <span style={{ color: "#ccc" }}>{" "}-H </span>
+                <span style={{ color: "#D4AF37" }}>&quot;x-payment: &lt;signed-tx&gt;&quot;</span>
+                <span style={{ color: "#ccc" }}> https://apijapan.vercel.app/api/weather/tokyo</span>
+                {"\n\n"}
+                <span style={{ color: "#666" }}>HTTP/1.1 </span>
+                <span className="text-emerald-400">200 OK</span>
+                {"\n"}
+                <span style={{ color: "#888" }}>
+                  {"{"}&quot;city&quot;:&quot;tokyo&quot;,&quot;temperature_2m&quot;:22.5,&quot;relative_humidity_2m&quot;:60,&quot;wind_speed_10m&quot;:5.2{"}"}
+                </span>
               </pre>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800">
-        <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-center">
-          <p className="text-zinc-600 text-sm">
-            Powered by x402 | Built by x402 Inc.
+      {/* ── Footer ── */}
+      <footer style={{ borderTop: "1px solid #1a1a1a" }}>
+        <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+          <p className="text-xs" style={{ color: "#333" }}>
+            Built by{" "}
+            <a
+              href="https://x402jp.com"
+              className="transition-colors hover:text-white"
+              style={{ color: "#D4AF37" }}
+            >
+              x402 Inc.
+            </a>
           </p>
+          <a
+            href="https://x402jp.com"
+            className="text-xs transition-colors hover:text-white"
+            style={{ color: "#333" }}
+          >
+            x402jp.com ↗
+          </a>
         </div>
       </footer>
     </div>

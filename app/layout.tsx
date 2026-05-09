@@ -1,37 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: {
-    default: "API Japan — Japan Data APIs for AI Agents",
+    default: "API Japan — Japan & APAC Data APIs for AI Agents",
     template: "%s | API Japan",
   },
   description:
-    "x402対応の日本データAPI。天気・為替・株価をAIエージェントに提供。APIキー不要・USDC決済。",
+    "x402対応 APAC データAPI。天気・為替・暗号資産・地震・企業情報をAIエージェントに提供。APIキー不要・USDC決済。",
+  openGraph: {
+    title: "API Japan — Japan & APAC Data APIs for AI Agents",
+    description: "APIキー不要。x402プロトコルでUSDCを送るだけ。",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="ja"
-      className={`${geistSans.variable} ${geistMono.variable}`}
-    >
-      <body className="bg-zinc-950 text-zinc-100 antialiased">{children}</body>
+    <html lang="ja">
+      <body>{children}</body>
     </html>
   );
 }
