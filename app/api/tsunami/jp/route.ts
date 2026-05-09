@@ -3,7 +3,7 @@ import { withX402 } from "@x402/next";
 import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
-const handler = async (_req: NextRequest): Promise<Response> => {
+const handler = async (_req: NextRequest): Promise<NextResponse> => {
   const res = await fetch(
     "https://api.p2pquake.net/v2/history?codes=552&limit=5",
     { next: { revalidate: 60 } }

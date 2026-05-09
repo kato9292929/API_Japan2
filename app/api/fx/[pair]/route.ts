@@ -3,7 +3,7 @@ import { withX402 } from "@x402/next";
 import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
-const handler = async (req: NextRequest): Promise<Response> => {
+const handler = async (req: NextRequest): Promise<NextResponse> => {
   const pair = req.nextUrl.pathname.split("/").pop() ?? "USDJPY";
   const res = await fetch("https://open.er-api.com/v6/latest/USD");
   const data = await res.json();

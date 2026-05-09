@@ -6,7 +6,7 @@ import { server } from "@/lib/x402-server";
 const pick = (xml: string, tag: string) =>
   xml.match(new RegExp(`<${tag}[^>]*>([^<]*)</${tag}>`))?.[1]?.trim() ?? null;
 
-const handler = async (req: NextRequest): Promise<Response> => {
+const handler = async (req: NextRequest): Promise<NextResponse> => {
   const number = req.nextUrl.pathname.split("/").pop() ?? "";
   const appId = process.env.HOUJIN_API_KEY;
   if (!appId) {

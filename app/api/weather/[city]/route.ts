@@ -25,7 +25,7 @@ const CITIES: Record<string, { lat: number; lon: number }> = {
   auckland: { lat: -36.86, lon: 174.77 },
 };
 
-const handler = async (req: NextRequest): Promise<Response> => {
+const handler = async (req: NextRequest): Promise<NextResponse> => {
   const city = req.nextUrl.pathname.split("/").pop()?.toLowerCase() ?? "tokyo";
   const coords = CITIES[city] ?? CITIES.tokyo;
   const res = await fetch(
