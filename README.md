@@ -20,8 +20,14 @@ API Japan exposes REST endpoints protected by the [x402 payment protocol](https:
 | `GET /api/fx/[pair]` | APAC FX rate against USD (USDJPY, USDSGD, USDKRW, ...) | $0.001 USDC |
 | `GET /api/crypto/[coin]` | Crypto price in USD + JPY via CoinGecko (bitcoin, ethereum, solana, ...) | $0.001 USDC |
 | `GET /api/news/japan` | Latest Japan news headlines from NHK | $0.002 USDC |
-| `GET /api/news/apac` | APAC crypto news headlines | $0.002 USDC |
+| `GET /api/news/apac` | APAC crypto news headlines from CoinDesk | $0.002 USDC |
 | `GET /api/holiday/jp` | Japanese public holidays for the current year | $0.001 USDC |
+| `GET /api/earthquake/jp` | Recent Japan earthquakes from P2PQuake (JMA data) | $0.002 USDC |
+| `GET /api/tsunami/jp` | Japan tsunami warnings from P2PQuake (JMA data) | $0.003 USDC |
+| `GET /api/air/[city]` | Air quality index for APAC cities (AQI, PM2.5, PM10, NO2, O3) | $0.002 USDC |
+| `GET /api/company/[number]` | Japan corporate info by corporate number (国税庁 法人番号API) | $0.002 USDC |
+| `GET /api/stats/[prefecture]` | Japan prefecture statistics datasets from e-Stat | $0.003 USDC |
+| `GET /api/culture/[keyword]` | Japan cultural heritage search via Japan Search | $0.002 USDC |
 | `GET /api/stocks/[ticker]` | TSE/APAC stock price | $0.010 USDC |
 
 Networks:
@@ -142,8 +148,11 @@ lib/
 
 | Variable | Required | Description |
 |---|---|---|
-| `WALLET_ADDRESS` | Yes | EVM address to receive USDC payments (Base Sepolia) |
-| `SOLANA_WALLET_ADDRESS` | Yes | Solana address to receive USDC payments (Devnet) |
+| `WALLET_ADDRESS` | Yes | EVM address to receive USDC payments (Base mainnet) |
+| `SOLANA_WALLET_ADDRESS` | Yes | Solana address to receive USDC payments (Mainnet) |
+| `WAQI_TOKEN` | For `/api/air/[city]` | Free token from [aqicn.org/api](https://aqicn.org/api/) |
+| `HOUJIN_API_KEY` | For `/api/company/[number]` | Free key from [houjin-bangou.nta.go.jp](https://www.houjin-bangou.nta.go.jp/webapi/) |
+| `ESTAT_API_KEY` | For `/api/stats/[prefecture]` | Free key from [api.e-stat.go.jp](https://api.e-stat.go.jp/) |
 
 ---
 
