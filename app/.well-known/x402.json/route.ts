@@ -47,6 +47,12 @@ export function GET() {
         description: "TSE stock data",
         accepts: [evmAccept("10000"), solanaAccept("10000")],
       },
+      {
+        path: "/api/news/apac",
+        method: "GET",
+        description: "APAC crypto news",
+        accepts: [evmAccept("5000"), solanaAccept("5000")],
+      },
     ],
   });
 }
