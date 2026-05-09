@@ -145,17 +145,8 @@ export default function Home() {
             {ENDPOINTS.map((ep) => (
               <div
                 key={ep.path}
-                className="rounded-xl p-5 transition-colors group"
-                style={{
-                  background: "#080808",
-                  border: "1px solid #1a1a1a",
-                }}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLElement).style.borderColor = "#2a2a2a")
-                }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLElement).style.borderColor = "#1a1a1a")
-                }
+                className="endpoint-card rounded-xl p-5"
+                style={{ background: "#080808" }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <span

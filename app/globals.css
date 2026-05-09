@@ -16,3 +16,11 @@ body {
   font-family: 'Outfit', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+.endpoint-card {
+  border: 1px solid #1a1a1a;
+  transition: border-color 0.15s;
+}
+.endpoint-card:hover {
+  border-color: #333333;
+}
