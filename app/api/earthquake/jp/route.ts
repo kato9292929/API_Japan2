@@ -8,7 +8,7 @@ const SCALE_LABEL: Record<number, string> = {
   45: "震度5弱", 50: "震度5強", 55: "震度6弱", 60: "震度6強", 70: "震度7",
 };
 
-const handler = async (_req: NextRequest) => {
+const handler = async (_req: NextRequest): Promise<Response> => {
   const res = await fetch(
     "https://api.p2pquake.net/v2/history?codes=551&limit=10",
     { next: { revalidate: 60 } }

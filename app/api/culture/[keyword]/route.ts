@@ -3,7 +3,7 @@ import { withX402 } from "@x402/next";
 import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest): Promise<Response> => {
   const keyword = req.nextUrl.pathname.split("/").pop() ?? "";
   const url =
     `https://jpsearch.go.jp/api/item/search/simple` +

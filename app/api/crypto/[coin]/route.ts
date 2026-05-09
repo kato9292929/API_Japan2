@@ -3,7 +3,7 @@ import { withX402 } from "@x402/next";
 import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest): Promise<Response> => {
   const coin = req.nextUrl.pathname.split("/").pop() ?? "bitcoin";
   const res = await fetch(
     `https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=usd,jpy&include_24hr_change=true&include_market_cap=true`,

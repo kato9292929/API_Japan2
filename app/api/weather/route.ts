@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
 import { server } from "@/lib/x402-server";
 
-const handler = async (_req: NextRequest) => {
+const handler = async (_req: NextRequest): Promise<Response> => {
   const res = await fetch(
     "https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
   );

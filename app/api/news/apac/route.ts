@@ -3,7 +3,7 @@ import { withX402 } from "@x402/next";
 import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
-const handler = async (_req: NextRequest) => {
+const handler = async (_req: NextRequest): Promise<Response> => {
   const res = await fetch(
     "https://feeds.feedburner.com/CoinDesk" ,
     { headers: { "User-Agent": "Mozilla/5.0" }, next: { revalidate: 300 } }

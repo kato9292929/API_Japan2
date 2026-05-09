@@ -16,7 +16,7 @@ const PREFECTURE_CODE: Record<string, string> = {
   kagoshima: "46", okinawa: "47",
 };
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest): Promise<Response> => {
   const prefecture = req.nextUrl.pathname.split("/").pop()?.toLowerCase() ?? "tokyo";
   const appId = process.env.ESTAT_API_KEY;
   if (!appId) {
