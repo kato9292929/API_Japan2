@@ -8,9 +8,9 @@ export function GET() {
 
   const evmAccept = (maxAmountRequired: string) => ({
     scheme: "exact",
-    network: "base-sepolia",
+    network: "base",
     maxAmountRequired,
-    asset: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+    asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     payTo: evmPayTo,
     maxTimeoutSeconds: 300,
     extra: { name: "USDC", version: "2" },
@@ -18,9 +18,9 @@ export function GET() {
 
   const solanaAccept = (maxAmountRequired: string) => ({
     scheme: "exact",
-    network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+    network: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
     maxAmountRequired,
-    asset: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+    asset: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     payTo: solanaPayTo,
     maxTimeoutSeconds: 300,
     extra: { name: "USDC" },
