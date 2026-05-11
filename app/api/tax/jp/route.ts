@@ -4,15 +4,15 @@ import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
 const TAX_RATES: Record<string, number> = {
-  standard: 0.10,  // 標準税率
-  reduced:  0.08,  // 軽減税率 (食料品・新聞)
-  exempt:   0.00,  // 非課税
+  standard: 0.10,
+  reduced:  0.08,
+  exempt:   0.00,
 };
 
 const REDUCED_CATEGORIES = ["food", "beverage", "newspaper", "reduced"];
 const EXEMPT_CATEGORIES  = ["medical", "welfare", "education", "exempt"];
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest): Promise<NextResponse> => {
   const amountStr  = req.nextUrl.searchParams.get("amount");
   const categoryIn = (req.nextUrl.searchParams.get("category") ?? "standard").toLowerCase();
 
