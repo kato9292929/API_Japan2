@@ -33,7 +33,7 @@ const POPULATION: Record<string, { name_ja: string; population: number; househol
   osaka:     { name_ja: "大阪府", population: 8820000,  households: 4360000, density_per_km2: 4631, change_yoy_pct: 0.01  },
   hyogo:     { name_ja: "兵庫県", population: 5440000,  households: 2430000, density_per_km2: 651,  change_yoy_pct: -0.28 },
   nara:      { name_ja: "奈良県", population: 1317000,  households: 554000,  density_per_km2: 356,  change_yoy_pct: -0.66 },
-  wakayama:  { name_ja: "和歌山県", population: 916000,  households: 387000,  density_per_km2: 194,  change_yoy_pct: -0.97 },
+  wakayama:  { name_ja: "和歌山県", population: 916000, households: 387000, density_per_km2: 194, change_yoy_pct: -0.97 },
   tottori:   { name_ja: "鳥取県", population: 549000,   households: 228000,  density_per_km2: 158,  change_yoy_pct: -0.82 },
   shimane:   { name_ja: "島根県", population: 671000,   households: 278000,  density_per_km2: 99,   change_yoy_pct: -0.72 },
   okayama:   { name_ja: "岡山県", population: 1890000,  households: 808000,  density_per_km2: 269,  change_yoy_pct: -0.29 },
@@ -49,11 +49,11 @@ const POPULATION: Record<string, { name_ja: string; population: number; househol
   kumamoto:  { name_ja: "熊本県", population: 1747000,  households: 753000,  density_per_km2: 237,  change_yoy_pct: -0.31 },
   oita:      { name_ja: "大分県", population: 1117000,  households: 501000,  density_per_km2: 176,  change_yoy_pct: -0.61 },
   miyazaki:  { name_ja: "宮崎県", population: 1060000,  households: 471000,  density_per_km2: 140,  change_yoy_pct: -0.61 },
-  kagoshima: { name_ja: "鹿児島県", population: 1574000, households: 720000,  density_per_km2: 175,  change_yoy_pct: -0.69 },
+  kagoshima: { name_ja: "鹿児島県", population: 1574000, households: 720000, density_per_km2: 175, change_yoy_pct: -0.69 },
   okinawa:   { name_ja: "沖縄県", population: 1470000,  households: 637000,  density_per_km2: 648,  change_yoy_pct: 0.09  },
 };
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest): Promise<NextResponse> => {
   const prefecture = (req.nextUrl.pathname.split("/").pop() ?? "tokyo").toLowerCase();
   const data = POPULATION[prefecture];
   if (!data) {
@@ -86,14 +86,9 @@ export const GET = withX402(
           properties: { prefecture: { type: "string", description: "Prefecture name in English (e.g. tokyo, osaka, hokkaido)" } },
           required: ["prefecture"],
         },
-        output: {
-          example: { prefecture: "tokyo", name_ja: "東京都", population: 14090000, households: 7289000, density_per_km2: 6476, change_yoy_pct: 0.31, data_year: 2024 },
-        },
+        output: { example: { prefecture: "tokyo", name_ja: "東京都", population: 14090000, density_per_km2: 6476, data_year: 2024 } },
       }),
     },
   },
-  server,
-  undefined,
-  undefined,
-  false,
+  server, undefined, undefined, false,
 );

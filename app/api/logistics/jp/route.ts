@@ -3,7 +3,6 @@ import { withX402 } from "@x402/next";
 import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { server } from "@/lib/x402-server";
 
-// Yamato Transport TA-Q-BIN published rates 2024 (JPY, mainland base)
 const SIZE_CLASSES = [
   { name: "60",  max_weight_g: 2000,  max_girth_cm: 60,  base_jpy: 1100 },
   { name: "80",  max_weight_g: 5000,  max_girth_cm: 80,  base_jpy: 1320 },
@@ -13,33 +12,17 @@ const SIZE_CLASSES = [
   { name: "160", max_weight_g: 25000, max_girth_cm: 160, base_jpy: 2090 },
 ];
 
-// Regional zone surcharge relative to Kanto (JPY)
 const ZONE_SURCHARGE: Record<string, number> = {
-  hokkaido: 330,
-  tohoku:   110,
-  kanto:    0,
-  chubu:    110,
-  kinki:    220,
-  chugoku:  330,
-  shikoku:  330,
-  kyushu:   440,
-  okinawa:  660,
+  hokkaido: 330, tohoku: 110, kanto: 0, chubu: 110,
+  kinki: 220, chugoku: 330, shikoku: 330, kyushu: 440, okinawa: 660,
 };
 
-// Estimated delivery days from Tokyo (business days)
 const DELIVERY_DAYS: Record<string, number> = {
-  hokkaido: 2,
-  tohoku:   1,
-  kanto:    1,
-  chubu:    1,
-  kinki:    2,
-  chugoku:  2,
-  shikoku:  2,
-  kyushu:   2,
-  okinawa:  3,
+  hokkaido: 2, tohoku: 1, kanto: 1, chubu: 1,
+  kinki: 2, chugoku: 2, shikoku: 2, kyushu: 2, okinawa: 3,
 };
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest): Promise<NextResponse> => {
   const weightGStr = req.nextUrl.searchParams.get("weight_g");
   const toRegion   = (req.nextUrl.searchParams.get("to_region") ?? "kanto").toLowerCase();
   const girthStr   = req.nextUrl.searchParams.get("girth_cm");
@@ -56,7 +39,6 @@ const handler = async (req: NextRequest) => {
 
   const weight_g = Number(weightGStr);
   const girth_cm = girthStr ? Number(girthStr) : 60;
-
   const sizeClass = SIZE_CLASSES.find(
     (s) => weight_g <= s.max_weight_g && girth_cm <= s.max_girth_cm
   );
@@ -65,18 +47,14 @@ const handler = async (req: NextRequest) => {
     return NextResponse.json({ error: "Package exceeds maximum size (160 size / 25 kg)" }, { status: 400 });
   }
 
-  const surcharge  = ZONE_SURCHARGE[toRegion];
-  const price_jpy  = sizeClass.base_jpy + surcharge;
-  const est_days   = DELIVERY_DAYS[toRegion];
-
   return NextResponse.json({
     weight_g,
     girth_cm,
     to_region: toRegion,
     size_class: sizeClass.name,
     carrier: "Yamato Transport (TA-Q-BIN)",
-    price_jpy,
-    estimated_delivery_days: est_days,
+    price_jpy: sizeClass.base_jpy + ZONE_SURCHARGE[toRegion],
+    estimated_delivery_days: DELIVERY_DAYS[toRegion],
     note: "From Tokyo. Rates based on published 2024 TA-Q-BIN standard pricing.",
     source: "ヤマト運輸",
     reference: "https://www.kuronekoyamato.co.jp/ytc/customer/send/services/takkyubin/",
@@ -95,19 +73,12 @@ export const GET = withX402(
       ...declareDiscoveryExtension({
         output: {
           example: {
-            weight_g: 500,
-            size_class: "60",
-            carrier: "Yamato Transport (TA-Q-BIN)",
-            price_jpy: 1100,
-            estimated_delivery_days: 1,
-            to_region: "kanto",
+            weight_g: 500, size_class: "60", carrier: "Yamato Transport (TA-Q-BIN)",
+            price_jpy: 1100, estimated_delivery_days: 1, to_region: "kanto",
           },
         },
       }),
     },
   },
-  server,
-  undefined,
-  undefined,
-  false,
+  server, undefined, undefined, false,
 );

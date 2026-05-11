@@ -27,19 +27,19 @@ const VISA_INFO: Record<string, {
   PH: { visa_required: false, max_stay_days: 30, visa_type: "waiver", notes: "Short-term stay without visa up to 30 days" },
   ID: { visa_required: false, max_stay_days: 30, visa_type: "waiver", notes: "Short-term stay without visa up to 30 days" },
   CN: { visa_required: false, max_stay_days: 15, visa_type: "waiver", notes: "Visa exemption restored 2024; up to 15 days" },
-  IN: { visa_required: true, max_stay_days: null, visa_type: "required", notes: "Visa required; apply via Japanese embassy" },
-  VN: { visa_required: true, max_stay_days: null, visa_type: "required", notes: "Visa required" },
+  IN: { visa_required: true,  max_stay_days: null, visa_type: "required", notes: "Visa required; apply via Japanese embassy" },
+  VN: { visa_required: true,  max_stay_days: null, visa_type: "required", notes: "Visa required" },
   BR: { visa_required: false, max_stay_days: 90, visa_type: "waiver", notes: "Short-term stay without visa" },
   MX: { visa_required: false, max_stay_days: 90, visa_type: "waiver", notes: "Short-term stay without visa" },
   AR: { visa_required: false, max_stay_days: 90, visa_type: "waiver", notes: "Short-term stay without visa" },
-  RU: { visa_required: true, max_stay_days: null, visa_type: "required", notes: "Visa required" },
+  RU: { visa_required: true,  max_stay_days: null, visa_type: "required", notes: "Visa required" },
   UA: { visa_required: false, max_stay_days: 90, visa_type: "waiver", notes: "Short-term stay without visa" },
   AE: { visa_required: false, max_stay_days: 30, visa_type: "waiver", notes: "Short-term stay without visa up to 30 days" },
   TR: { visa_required: false, max_stay_days: 90, visa_type: "waiver", notes: "Short-term stay without visa" },
-  ZA: { visa_required: true, max_stay_days: null, visa_type: "required", notes: "Visa required" },
+  ZA: { visa_required: true,  max_stay_days: null, visa_type: "required", notes: "Visa required" },
 };
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest): Promise<NextResponse> => {
   const country = (req.nextUrl.searchParams.get("country") ?? "US").toUpperCase();
   const info = VISA_INFO[country];
   if (!info) {
@@ -73,8 +73,5 @@ export const GET = withX402(
       }),
     },
   },
-  server,
-  undefined,
-  undefined,
-  false,
+  server, undefined, undefined, false,
 );
