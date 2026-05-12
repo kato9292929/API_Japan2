@@ -46,17 +46,6 @@ export function GET() {
     data_type: "live",
   };
 
-  const stocksSource = {
-    name: "Mock data — J-Quants API (planned)",
-    url: "https://jpx-jquants.com",
-    license: "MOCK: no real data. Planned: J-Quants API (JPX official)",
-    registration_required: false,
-    commercial_use: "n/a (mock)",
-    update_frequency: "n/a (mock; planned: real-time during TSE hours)",
-    data_type: "mock",
-    warning: "Returns static placeholder values. Response includes note: 'mock data'.",
-  };
-
   const newsSource = {
     name: "Mock data — RSS aggregation (planned)",
     url: "",
@@ -130,6 +119,141 @@ export function GET() {
     coverage: "9 regions: hokkaido, tohoku, kanto, chubu, kinki, chugoku, shikoku, kyushu, okinawa",
   };
 
+  const jgbSource = {
+    name: "Ministry of Finance Japan (財務省) — JGB CME Yields",
+    url: "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/",
+    license: "Japanese Government data — public domain, unrestricted use",
+    registration_required: false,
+    commercial_use: "unrestricted",
+    update_frequency: "daily (business days)",
+    data_type: "live",
+    coverage: "2Y, 5Y, 10Y, 20Y, 30Y, 40Y maturity yields",
+  };
+
+  const gdpSource = {
+    name: "Cabinet Office Japan (内閣府) — GDP Quarterly Estimates (QE)",
+    url: "https://www.esri.cao.go.jp/en/sna/data/sokuhou/files/2024/qe244_2/gdemenuea.html",
+    license: "Japanese Government data — public domain, unrestricted use",
+    registration_required: false,
+    commercial_use: "unrestricted",
+    update_frequency: "quarterly (preliminary then revised)",
+    data_type: "static_curated",
+    last_curated: "2025-03",
+    coverage: "Real GDP growth QoQ and YoY, latest quarter",
+  };
+
+  const cpiSource = {
+    name: "Statistics Bureau of Japan (総務省統計局) — Consumer Price Index via e-Stat",
+    url: "https://www.e-stat.go.jp/stat-search/files?stat_infid=000040135083",
+    license: "e-Stat 利用規約 — 出典明示のうえ商用利用可",
+    registration_required: true,
+    commercial_use: "permitted with attribution",
+    update_frequency: "monthly (released ~3–4 weeks after reference month)",
+    data_type: "live (with static fallback)",
+    env_key: "ESTAT_API_KEY",
+  };
+
+  const bojSource = {
+    name: "Bank of Japan (日本銀行) — Policy Rate Decisions",
+    url: "https://www.boj.or.jp/en/mopo/mpmdeci/",
+    license: "Japanese Government/BOJ public data — unrestricted use",
+    registration_required: false,
+    commercial_use: "unrestricted",
+    update_frequency: "per MPM meeting (approx. 8 times per year)",
+    data_type: "static_curated",
+    last_curated: "2025-01-24",
+    coverage: "Uncollateralized overnight call rate target, full history",
+  };
+
+  const postalSource = {
+    name: "zipcloud (住所検索API by Japan Post / 日本郵便)",
+    url: "https://zipcloud.ibsnet.co.jp/doc/api",
+    license: "Free to use — no registration, no commercial restriction stated",
+    registration_required: false,
+    commercial_use: "permitted",
+    update_frequency: "monthly (follows Japan Post zip code updates)",
+    data_type: "live",
+    coverage: "All Japan postal codes (7-digit)",
+  };
+
+  const elevationSource = {
+    name: "Geospatial Information Authority of Japan (国土地理院) — Elevation API",
+    url: "https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php",
+    license: "国土地理院コンテンツ利用規約 — 出典明示のうえ商用利用可",
+    registration_required: false,
+    commercial_use: "permitted with attribution",
+    update_frequency: "static (DEM dataset, updated periodically)",
+    data_type: "live",
+    coverage: "All Japan coordinates, resolution: 10m DEM",
+  };
+
+  const addressSource = {
+    name: "Geospatial Information Authority of Japan (国土地理院) — Reverse Geocoder",
+    url: "https://mreversegeocoder.gsi.go.jp",
+    license: "国土地理院コンテンツ利用規約 — 出典明示のうえ商用利用可",
+    registration_required: false,
+    commercial_use: "permitted with attribution",
+    update_frequency: "static (administrative boundary dataset)",
+    data_type: "live",
+    coverage: "All Japan coordinates → municipality + town/district name",
+  };
+
+  const hazardSource = {
+    name: "Geospatial Information Authority of Japan / 国土交通省 — ハザードマップポータル",
+    url: "https://disaportal.gsi.go.jp",
+    license: "国土地理院コンテンツ利用規約 — 出典明示のうえ商用利用可",
+    registration_required: false,
+    commercial_use: "permitted with attribution",
+    update_frequency: "per municipal hazard map update cycle",
+    data_type: "live",
+    coverage: "Flood, landslide, tsunami, storm surge hazard levels by coordinate",
+  };
+
+  const procurementSource = {
+    name: "e-Gov 官公需情報 (KKJ) — Japanese Government Procurement Portal",
+    url: "https://www.e-gov.go.jp/",
+    license: "Japanese Government data — public domain, unrestricted use",
+    registration_required: false,
+    commercial_use: "unrestricted",
+    update_frequency: "daily (new notices published on business days)",
+    data_type: "live (with static fallback)",
+    coverage: "All central government procurement notices",
+  };
+
+  const resasSource = {
+    name: "地域経済分析システム RESAS (Regional Economy Society Analyzing System)",
+    url: "https://opendata.resas-portal.go.jp",
+    license: "RESAS API 利用規約 — 登録必要・非商用・出典明示",
+    registration_required: true,
+    commercial_use: "non-commercial only (government research/public benefit)",
+    update_frequency: "annual",
+    data_type: "live (with static fallback)",
+    env_key: "RESAS_API_KEY",
+    coverage: "All 47 prefectures — population, economy, industry data",
+  };
+
+  const jshisSource = {
+    name: "防災科学技術研究所 J-SHIS — Japan Seismic Hazard Information Station",
+    url: "https://j-shis.bosai.go.jp",
+    license: "NIED公開データ — 出典明示のうえ利用可（商用利用別途確認推奨）",
+    registration_required: false,
+    commercial_use: "permitted with attribution (verify for production use)",
+    update_frequency: "per NIED model update (National Seismic Hazard Map revision cycle)",
+    data_type: "live",
+    coverage: "Probability of seismic intensity ≥6- in 30/50 years, nationwide",
+  };
+
+  const floodSource = {
+    name: "Geospatial Information Authority of Japan / 国土交通省 — 洪水浸水想定区域",
+    url: "https://disaportal.gsi.go.jp",
+    license: "国土地理院コンテンツ利用規約 — 出典明示のうえ商用利用可",
+    registration_required: false,
+    commercial_use: "permitted with attribution",
+    update_frequency: "per municipal flood hazard map update",
+    data_type: "live",
+    coverage: "Estimated inundation depth (m) by coordinate",
+  };
+
   return NextResponse.json({
     x402Version: 1,
     endpoints: [
@@ -142,12 +266,6 @@ export function GET() {
       { path: "/api/fx/EURJPY", method: "GET", description: "EUR/JPY exchange rate", accepts: [evm("1000"), sol("1000")], data_source: fxSource },
       { path: "/api/fx/GBPJPY", method: "GET", description: "GBP/JPY exchange rate", accepts: [evm("1000"), sol("1000")], data_source: fxSource },
       { path: "/api/fx/AUDJPY", method: "GET", description: "AUD/JPY exchange rate", accepts: [evm("1000"), sol("1000")], data_source: fxSource },
-      // ─── Stocks (5) ───
-      { path: "/api/stocks/7203.T", method: "GET", description: "Toyota (TSE:7203)",   accepts: [evm("10000"), sol("10000")], data_source: stocksSource },
-      { path: "/api/stocks/6758.T", method: "GET", description: "Sony (TSE:6758)",     accepts: [evm("10000"), sol("10000")], data_source: stocksSource },
-      { path: "/api/stocks/9984.T", method: "GET", description: "SoftBank (TSE:9984)", accepts: [evm("10000"), sol("10000")], data_source: stocksSource },
-      { path: "/api/stocks/7974.T", method: "GET", description: "Nintendo (TSE:7974)", accepts: [evm("10000"), sol("10000")], data_source: stocksSource },
-      { path: "/api/stocks/6861.T", method: "GET", description: "Keyence (TSE:6861)",  accepts: [evm("10000"), sol("10000")], data_source: stocksSource },
       // ─── News (1) ───
       { path: "/api/news/apac", method: "GET", description: "APAC crypto news", accepts: [evm("5000"), sol("5000")], data_source: newsSource },
       // ─── Visa (1) ───
@@ -160,6 +278,21 @@ export function GET() {
       { path: "/api/population/{prefecture}", method: "GET", description: "Japan prefecture population statistics", accepts: [evm("3000"), sol("3000")], data_source: populationSource },
       // ─── Logistics (1) ───
       { path: "/api/logistics/jp", method: "GET", description: "Japan domestic shipping rate estimate (?weight_g=500&to_region=kanto)", accepts: [evm("5000"), sol("5000")], data_source: logisticsSource },
+      // ─── Macro Economy (4) ───
+      { path: "/api/jgb", method: "GET", description: "Japan JGB yield curve", accepts: [evm("2000"), sol("2000")], data_source: jgbSource },
+      { path: "/api/gdp/jp", method: "GET", description: "Japan GDP growth rate", accepts: [evm("3000"), sol("3000")], data_source: gdpSource },
+      { path: "/api/cpi/jp", method: "GET", description: "Japan CPI inflation data", accepts: [evm("2000"), sol("2000")], data_source: cpiSource },
+      { path: "/api/boj/policy", method: "GET", description: "Bank of Japan policy rate", accepts: [evm("3000"), sol("3000")], data_source: bojSource },
+      // ─── Infrastructure (2) ───
+      { path: "/api/postal/{code}", method: "GET", description: "Japan postal code lookup", accepts: [evm("1000"), sol("1000")], data_source: postalSource },
+      { path: "/api/elevation/{lat}/{lng}", method: "GET", description: "Japan terrain elevation", accepts: [evm("1000"), sol("1000")], data_source: elevationSource },
+      // ─── Geospatial / Safety (6) ───
+      { path: "/api/address/{lat}/{lng}", method: "GET", description: "Japan reverse geocoder", accepts: [evm("1000"), sol("1000")], data_source: addressSource },
+      { path: "/api/hazard/{lat}/{lng}", method: "GET", description: "Japan hazard map data", accepts: [evm("3000"), sol("3000")], data_source: hazardSource },
+      { path: "/api/procurement/jp", method: "GET", description: "Japan government procurement notices", accepts: [evm("3000"), sol("3000")], data_source: procurementSource },
+      { path: "/api/resas/{prefecture}", method: "GET", description: "Japan RESAS regional economy data", accepts: [evm("3000"), sol("3000")], data_source: resasSource },
+      { path: "/api/jshis/{lat}/{lng}", method: "GET", description: "Japan seismic hazard probability", accepts: [evm("3000"), sol("3000")], data_source: jshisSource },
+      { path: "/api/flood/{lat}/{lng}", method: "GET", description: "Japan flood risk data", accepts: [evm("3000"), sol("3000")], data_source: floodSource },
     ],
   });
 }
