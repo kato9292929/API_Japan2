@@ -9,6 +9,7 @@ const handler = async (_req: NextRequest): Promise<NextResponse> => {
     { headers: { Accept: "application/json" } }
   );
   if (!res.ok) {
+    // Fallback: return recent static sample if upstream unavailable
     return NextResponse.json({
       source: "e-Gov KKJ (fallback)",
       notices: [
