@@ -27,9 +27,9 @@ class CDPFacilitatorClient {
   getSupported() {
     return Promise.resolve({
       kinds: [
-        { x402Version: 1, scheme: "exact", network: "eip155:84532" as const },
+        { x402Version: 2, scheme: "exact", network: "eip155:84532" as const },
         {
-          x402Version: 1,
+          x402Version: 2,
           scheme: "exact",
           network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1" as const,
         },
