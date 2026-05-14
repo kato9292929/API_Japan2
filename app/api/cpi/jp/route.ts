@@ -17,7 +17,6 @@ const handler = async (_req: NextRequest): Promise<NextResponse> => {
   const key = process.env.ESTAT_API_KEY;
   if (key) {
     try {
-      // 全国消費者物価指数 (statsDataId: 0003427113)
       const url = `https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData?appId=${key}&statsDataId=0003427113&metaGetFlg=N&cntGetFlg=N&sectionHeaderFlg=1&limit=12`;
       const res = await fetch(url, { next: { revalidate: 86400 } });
       if (res.ok) {
@@ -45,8 +44,8 @@ export const GET = withX402(
   handler,
   {
     accepts: [
-      { scheme: "exact", price: "$0.002", network: "eip155:84532", payTo: process.env.WALLET_ADDRESS as `0x${string}` },
-      { scheme: "exact", price: "$0.002", network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1", payTo: process.env.SOLANA_WALLET_ADDRESS as string },
+      { scheme: "exact", price: "$0.002", network: "eip155:8453", payTo: process.env.WALLET_ADDRESS as `0x${string}` },
+      { scheme: "exact", price: "$0.002", network: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", payTo: process.env.SOLANA_WALLET_ADDRESS as string },
     ],
     description: "Japan CPI — all items, core, core-core (Statistics Bureau via e-Stat)",
     extensions: { ...declareDiscoveryExtension({ output: { example: { month: "2025-03", all_items: { index: 109.3, yoy_pct: 3.6 }, core: { yoy_pct: 3.2 } } } }) },

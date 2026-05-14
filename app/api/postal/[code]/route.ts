@@ -39,8 +39,8 @@ export const GET = withX402(
   handler,
   {
     accepts: [
-      { scheme: "exact", price: "$0.001", network: "eip155:84532", payTo: process.env.WALLET_ADDRESS as `0x${string}` },
-      { scheme: "exact", price: "$0.001", network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1", payTo: process.env.SOLANA_WALLET_ADDRESS as string },
+      { scheme: "exact", price: "$0.001", network: "eip155:8453", payTo: process.env.WALLET_ADDRESS as `0x${string}` },
+      { scheme: "exact", price: "$0.001", network: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", payTo: process.env.SOLANA_WALLET_ADDRESS as string },
     ],
     description: "Japan postal code to address lookup (zipcloud)",
     extensions: {
