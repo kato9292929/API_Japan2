@@ -25,12 +25,13 @@ function formatPrice(maxAmountRequired: string): string {
   return `$${amount.toFixed(2)}`;
 }
 
-const DATA_SOURCES: Record<string, string> = {
-  "Japan weather data": "Open-Meteo",
-  "JPY exchange rate": "Yahoo Finance",
-  "TSE stock data": "Yahoo Finance",
-  "APAC crypto news": "RSS Aggregator",
-};
+function getDataSource(path: string): string {
+  if (path.startsWith("/api/weather/")) return "Open-Meteo";
+  if (path.startsWith("/api/fx/")) return "Yahoo Finance";
+  if (path.startsWith("/api/stocks/")) return "Yahoo Finance";
+  if (path.startsWith("/api/news/")) return "RSS Aggregator";
+  return "—";
+}
 
 export function EndpointGrid() {
   const [endpoints, setEndpoints] = useState<X402Endpoint[]>([]);
@@ -48,19 +49,19 @@ export function EndpointGrid() {
 
   if (loading) {
     return (
-      <div className="text-[#444] text-sm font-mono py-8">
+      <div className="text-[#444] text-sm font-mono py-8 px-6">
         loading endpoints...
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#111]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#111]">
       {endpoints.map((ep) => {
         const price = ep.accepts[0]?.maxAmountRequired
           ? formatPrice(ep.accepts[0].maxAmountRequired)
           : "—";
-        const source = DATA_SOURCES[ep.description] ?? ep.description;
+        const source = getDataSource(ep.path);
         return (
           <div
             key={ep.path}
