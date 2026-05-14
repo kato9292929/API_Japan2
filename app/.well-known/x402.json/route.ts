@@ -4,8 +4,6 @@ export const dynamic = "force-dynamic";
 
 export function GET() {
   const evmPayTo = (process.env.WALLET_ADDRESS ?? "0x0000000000000000000000000000000000000000") as `0x${string}`;
-  const solanaPayTo = process.env.SOLANA_WALLET_ADDRESS ?? "";
-
   const evm = (maxAmountRequired: string) => ({
     scheme: "exact",
     network: "base-sepolia",
@@ -14,16 +12,6 @@ export function GET() {
     payTo: evmPayTo,
     maxTimeoutSeconds: 300,
     extra: { name: "USDC", version: "2" },
-  });
-
-  const sol = (maxAmountRequired: string) => ({
-    scheme: "exact",
-    network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-    maxAmountRequired,
-    asset: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
-    payTo: solanaPayTo,
-    maxTimeoutSeconds: 300,
-    extra: { name: "USDC" },
   });
 
   const weatherSource = {
@@ -258,41 +246,41 @@ export function GET() {
     x402Version: 1,
     endpoints: [
       // ─── Weather (3) ───
-      { path: "/api/weather/tokyo",   method: "GET", description: "Tokyo current weather",   accepts: [evm("1000"),  sol("1000")],  data_source: weatherSource },
-      { path: "/api/weather/osaka",   method: "GET", description: "Osaka current weather",   accepts: [evm("1000"),  sol("1000")],  data_source: weatherSource },
-      { path: "/api/weather/sapporo", method: "GET", description: "Sapporo current weather", accepts: [evm("1000"),  sol("1000")],  data_source: weatherSource },
+      { path: "/api/weather/tokyo",   method: "GET", description: "Tokyo current weather",   accepts: [evm("1000")],  data_source: weatherSource },
+      { path: "/api/weather/osaka",   method: "GET", description: "Osaka current weather",   accepts: [evm("1000")],  data_source: weatherSource },
+      { path: "/api/weather/sapporo", method: "GET", description: "Sapporo current weather", accepts: [evm("1000")],  data_source: weatherSource },
       // ─── FX (4) ───
-      { path: "/api/fx/USDJPY", method: "GET", description: "USD/JPY exchange rate", accepts: [evm("1000"), sol("1000")], data_source: fxSource },
-      { path: "/api/fx/EURJPY", method: "GET", description: "EUR/JPY exchange rate", accepts: [evm("1000"), sol("1000")], data_source: fxSource },
-      { path: "/api/fx/GBPJPY", method: "GET", description: "GBP/JPY exchange rate", accepts: [evm("1000"), sol("1000")], data_source: fxSource },
-      { path: "/api/fx/AUDJPY", method: "GET", description: "AUD/JPY exchange rate", accepts: [evm("1000"), sol("1000")], data_source: fxSource },
+      { path: "/api/fx/USDJPY", method: "GET", description: "USD/JPY exchange rate", accepts: [evm("1000")], data_source: fxSource },
+      { path: "/api/fx/EURJPY", method: "GET", description: "EUR/JPY exchange rate", accepts: [evm("1000")], data_source: fxSource },
+      { path: "/api/fx/GBPJPY", method: "GET", description: "GBP/JPY exchange rate", accepts: [evm("1000")], data_source: fxSource },
+      { path: "/api/fx/AUDJPY", method: "GET", description: "AUD/JPY exchange rate", accepts: [evm("1000")], data_source: fxSource },
       // ─── News (1) ───
-      { path: "/api/news/apac", method: "GET", description: "APAC crypto news", accepts: [evm("5000"), sol("5000")], data_source: newsSource },
+      { path: "/api/news/apac", method: "GET", description: "APAC crypto news", accepts: [evm("5000")], data_source: newsSource },
       // ─── Visa (1) ───
-      { path: "/api/visa/jp", method: "GET", description: "Japan visa requirements (?country=US)", accepts: [evm("5000"), sol("5000")], data_source: visaSource },
+      { path: "/api/visa/jp", method: "GET", description: "Japan visa requirements (?country=US)", accepts: [evm("5000")], data_source: visaSource },
       // ─── Real estate (1) ───
-      { path: "/api/realestate/{city}", method: "GET", description: "Japan land price data by city", accepts: [evm("5000"), sol("5000")], data_source: realestateSource },
+      { path: "/api/realestate/{city}", method: "GET", description: "Japan land price data by city", accepts: [evm("5000")], data_source: realestateSource },
       // ─── Tax (1) ───
-      { path: "/api/tax/jp", method: "GET", description: "Japan consumption tax calculation (?amount=1000&category=standard)", accepts: [evm("3000"), sol("3000")], data_source: taxSource },
+      { path: "/api/tax/jp", method: "GET", description: "Japan consumption tax calculation (?amount=1000&category=standard)", accepts: [evm("3000")], data_source: taxSource },
       // ─── Population (1) ───
-      { path: "/api/population/{prefecture}", method: "GET", description: "Japan prefecture population statistics", accepts: [evm("3000"), sol("3000")], data_source: populationSource },
+      { path: "/api/population/{prefecture}", method: "GET", description: "Japan prefecture population statistics", accepts: [evm("3000")], data_source: populationSource },
       // ─── Logistics (1) ───
-      { path: "/api/logistics/jp", method: "GET", description: "Japan domestic shipping rate estimate (?weight_g=500&to_region=kanto)", accepts: [evm("5000"), sol("5000")], data_source: logisticsSource },
+      { path: "/api/logistics/jp", method: "GET", description: "Japan domestic shipping rate estimate (?weight_g=500&to_region=kanto)", accepts: [evm("5000")], data_source: logisticsSource },
       // ─── Macro Economy (4) ───
-      { path: "/api/jgb", method: "GET", description: "Japan JGB yield curve", accepts: [evm("2000"), sol("2000")], data_source: jgbSource },
-      { path: "/api/gdp/jp", method: "GET", description: "Japan GDP growth rate", accepts: [evm("3000"), sol("3000")], data_source: gdpSource },
-      { path: "/api/cpi/jp", method: "GET", description: "Japan CPI inflation data", accepts: [evm("2000"), sol("2000")], data_source: cpiSource },
-      { path: "/api/boj/policy", method: "GET", description: "Bank of Japan policy rate", accepts: [evm("3000"), sol("3000")], data_source: bojSource },
+      { path: "/api/jgb", method: "GET", description: "Japan JGB yield curve", accepts: [evm("2000")], data_source: jgbSource },
+      { path: "/api/gdp/jp", method: "GET", description: "Japan GDP growth rate", accepts: [evm("3000")], data_source: gdpSource },
+      { path: "/api/cpi/jp", method: "GET", description: "Japan CPI inflation data", accepts: [evm("2000")], data_source: cpiSource },
+      { path: "/api/boj/policy", method: "GET", description: "Bank of Japan policy rate", accepts: [evm("3000")], data_source: bojSource },
       // ─── Infrastructure (2) ───
-      { path: "/api/postal/{code}", method: "GET", description: "Japan postal code lookup", accepts: [evm("1000"), sol("1000")], data_source: postalSource },
-      { path: "/api/elevation/{lat}/{lng}", method: "GET", description: "Japan terrain elevation", accepts: [evm("1000"), sol("1000")], data_source: elevationSource },
+      { path: "/api/postal/{code}", method: "GET", description: "Japan postal code lookup", accepts: [evm("1000")], data_source: postalSource },
+      { path: "/api/elevation/{lat}/{lng}", method: "GET", description: "Japan terrain elevation", accepts: [evm("1000")], data_source: elevationSource },
       // ─── Geospatial / Safety (6) ───
-      { path: "/api/address/{lat}/{lng}", method: "GET", description: "Japan reverse geocoder", accepts: [evm("1000"), sol("1000")], data_source: addressSource },
-      { path: "/api/hazard/{lat}/{lng}", method: "GET", description: "Japan hazard map data", accepts: [evm("3000"), sol("3000")], data_source: hazardSource },
-      { path: "/api/procurement/jp", method: "GET", description: "Japan government procurement notices", accepts: [evm("3000"), sol("3000")], data_source: procurementSource },
-      { path: "/api/resas/{prefecture}", method: "GET", description: "Japan RESAS regional economy data", accepts: [evm("3000"), sol("3000")], data_source: resasSource },
-      { path: "/api/jshis/{lat}/{lng}", method: "GET", description: "Japan seismic hazard probability", accepts: [evm("3000"), sol("3000")], data_source: jshisSource },
-      { path: "/api/flood/{lat}/{lng}", method: "GET", description: "Japan flood risk data", accepts: [evm("3000"), sol("3000")], data_source: floodSource },
+      { path: "/api/address/{lat}/{lng}", method: "GET", description: "Japan reverse geocoder", accepts: [evm("1000")], data_source: addressSource },
+      { path: "/api/hazard/{lat}/{lng}", method: "GET", description: "Japan hazard map data", accepts: [evm("3000")], data_source: hazardSource },
+      { path: "/api/procurement/jp", method: "GET", description: "Japan government procurement notices", accepts: [evm("3000")], data_source: procurementSource },
+      { path: "/api/resas/{prefecture}", method: "GET", description: "Japan RESAS regional economy data", accepts: [evm("3000")], data_source: resasSource },
+      { path: "/api/jshis/{lat}/{lng}", method: "GET", description: "Japan seismic hazard probability", accepts: [evm("3000")], data_source: jshisSource },
+      { path: "/api/flood/{lat}/{lng}", method: "GET", description: "Japan flood risk data", accepts: [evm("3000")], data_source: floodSource },
     ],
   });
 }
