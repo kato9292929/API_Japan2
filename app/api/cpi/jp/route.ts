@@ -17,7 +17,6 @@ const handler = async (_req: NextRequest): Promise<NextResponse> => {
   const key = process.env.ESTAT_API_KEY;
   if (key) {
     try {
-      // 全国消費者物価指数 (statsDataId: 0003427113)
       const url = `https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData?appId=${key}&statsDataId=0003427113&metaGetFlg=N&cntGetFlg=N&sectionHeaderFlg=1&limit=12`;
       const res = await fetch(url, { next: { revalidate: 86400 } });
       if (res.ok) {
