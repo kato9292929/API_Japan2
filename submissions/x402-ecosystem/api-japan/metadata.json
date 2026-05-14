@@ -1,0 +1,7 @@
+{
+  "name": "API Japan",
+  "description": "Japan-focused data API service offering 25 x402-gated endpoints covering weather, FX rates, economic indicators (GDP, CPI, JGB yields, BOJ policy rate), geospatial data (elevation, reverse geocoding, flood risk, seismic hazard), visa requirements, real estate prices, and government procurement — all pay-per-use with USDC on Base or Solana.",
+  "logoUrl": "/logos/api-japan.svg",
+  "websiteUrl": "https://apijapan.vercel.app",
+  "category": "Services/Endpoints"
+}

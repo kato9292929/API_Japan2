@@ -66,7 +66,4 @@ export const GET = withX402(
     },
   },
   server,
-  undefined,
-  undefined,
-  false,
 );

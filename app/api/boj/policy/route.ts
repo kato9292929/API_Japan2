@@ -37,5 +37,5 @@ export const GET = withX402(
     description: "Bank of Japan policy interest rate and rate history",
     extensions: { ...declareDiscoveryExtension({ output: { example: { policy_interest_rate_pct: 0.50, last_change_date: "2025-01-24", rate_target: "Uncollateralized Overnight Call Rate" } } }) },
   },
-  server, undefined, undefined, false,
+  server,
 );

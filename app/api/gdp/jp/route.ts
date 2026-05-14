@@ -35,5 +35,5 @@ export const GET = withX402(
     description: "Japan GDP quarterly growth (Cabinet Office ESRI)",
     extensions: { ...declareDiscoveryExtension({ output: { example: { latest_quarter: "2024-Q4", real_gdp_growth_qoq_pct: -0.7, nominal_gdp_trillion_jpy: 609.5 } } }) },
   },
-  server, undefined, undefined, false,
+  server,
 );

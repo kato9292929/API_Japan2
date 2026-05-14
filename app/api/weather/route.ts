@@ -30,7 +30,4 @@ export const GET = withX402(
     description: "Tokyo weather data",
   },
   server,
-  undefined,
-  undefined,
-  false,
 );
