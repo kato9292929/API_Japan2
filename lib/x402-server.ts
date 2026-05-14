@@ -24,19 +24,16 @@ class CDPFacilitatorClient {
     });
   }
 
-  getSupported() {
-    return Promise.resolve({
+  async getSupported() {
+    return {
+      x402Version: 2,
       kinds: [
-        { x402Version: 2, scheme: "exact", network: "eip155:84532" as const },
-        {
-          x402Version: 2,
-          scheme: "exact",
-          network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1" as const,
-        },
+        { x402Version: 2, scheme: "exact", network: "eip155:8453" as const },
+        { x402Version: 2, scheme: "exact", network: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp" as const },
       ],
       extensions: [] as string[],
       signers: {} as Record<string, string[]>,
-    });
+    };
   }
 
   verify(...args: Parameters<HTTPFacilitatorClient["verify"]>) {
