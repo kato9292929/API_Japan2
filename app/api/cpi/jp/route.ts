@@ -51,5 +51,5 @@ export const GET = withX402(
     description: "Japan CPI — all items, core, core-core (Statistics Bureau via e-Stat)",
     extensions: { ...declareDiscoveryExtension({ output: { example: { month: "2025-03", all_items: { index: 109.3, yoy_pct: 3.6 }, core: { yoy_pct: 3.2 } } } }) },
   },
-  server, undefined, undefined, false,
+  server,
 );

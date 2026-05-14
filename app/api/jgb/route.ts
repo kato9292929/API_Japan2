@@ -57,5 +57,5 @@ export const GET = withX402(
     description: "Japan Government Bond yields (2Y 5Y 10Y 20Y 30Y)",
     extensions: { ...declareDiscoveryExtension({ output: { example: { date: "2025-05-09", rates_pct: { "2y": 0.535, "10y": 1.565, "30y": 2.395 } } } }) },
   },
-  server, undefined, undefined, false,
+  server,
 );
