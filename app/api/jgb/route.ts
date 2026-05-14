@@ -52,6 +52,7 @@ export const GET = withX402(
   {
     accepts: [
       { scheme: "exact", price: "$0.002", network: "eip155:84532", payTo: process.env.WALLET_ADDRESS as `0x${string}` },
+      { scheme: "exact", price: "$0.002", network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1", payTo: process.env.SOLANA_WALLET_ADDRESS as string },
     ],
     description: "Japan Government Bond yields (2Y 5Y 10Y 20Y 30Y)",
     extensions: { ...declareDiscoveryExtension({ output: { example: { date: "2025-05-09", rates_pct: { "2y": 0.535, "10y": 1.565, "30y": 2.395 } } } }) },

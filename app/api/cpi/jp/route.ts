@@ -46,6 +46,7 @@ export const GET = withX402(
   {
     accepts: [
       { scheme: "exact", price: "$0.002", network: "eip155:84532", payTo: process.env.WALLET_ADDRESS as `0x${string}` },
+      { scheme: "exact", price: "$0.002", network: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1", payTo: process.env.SOLANA_WALLET_ADDRESS as string },
     ],
     description: "Japan CPI — all items, core, core-core (Statistics Bureau via e-Stat)",
     extensions: { ...declareDiscoveryExtension({ output: { example: { month: "2025-03", all_items: { index: 109.3, yoy_pct: 3.6 }, core: { yoy_pct: 3.2 } } } }) },
